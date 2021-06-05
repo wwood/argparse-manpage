@@ -113,17 +113,34 @@ class _ManpageFormatter(HelpFormatter):
 
             # if the Optional doesn't take a value, format is:
             #    -s, --long
+            #
+            # if the Optional is --arg-1, --arg_1, display
+            #     --arg-1
+            # only.
             if action.nargs == 0:
-                parts.extend(map(self._bold, action.option_strings))
+                all_option_strings = list([o for o in action.option_strings])
+                for option_string in action.option_strings:
+                    if '_' in option_string and option_string.replace('_','-') in all_option_strings:
+                        pass # Ignore as this option is already present with underscore
+                    else:
+                        parts.append(self._bold(option_string))
 
             # if the Optional takes a value, format is:
             #    -s ARGS, --long ARGS
+            #
+            # if the Optional is --arg-1 ARGS, --arg_1 ARGS, display
+            #     --arg-1 ARGS
+            # only.
             else:
                 default = self._underline(action.dest.upper())
                 args_string = self._format_args(action, default)
+                all_option_strings = list([o for o in action.option_strings])
                 for option_string in action.option_strings:
-                    parts.append('{} {}'.format(self._bold(option_string),
-                                                args_string))
+                    if '_' in option_string and option_string.replace('_','-') in all_option_strings:
+                        pass # Ignore as this option is already present with underscore
+                    else:
+                        parts.append('{} {}'.format(self._bold(option_string),
+                                                    args_string))
             return ', '.join(parts)
 
 

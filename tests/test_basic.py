@@ -28,5 +28,20 @@ class Tests(unittest.TestCase):
         self.assertIn('.SH G2', str(man).split('\n'))
         self.assertNotIn('.SH OPTIONS', str(man).split('\n'))
 
+    def test_delete_underscored_arguments(self):
+        parser1 = argparse.ArgumentParser('duh')
+        parser1.add_argument('--arg-1','-a','--arg_1',action='store_true',
+            help='argument with optional underscore or hyphen')
+        parser1.add_argument('--arg-2','-b','--arg_2',
+            help='argument with optional underscore or hyphen')
+        man = Manpage(parser1)
+        with open('blah','w') as f:
+            f.write(str(man))
+        self.assertIn('\\fB\\-\\-arg\\-1\\fR, \\fB\\-a\\fR', str(man).split('\n'))
+        self.assertNotIn('--arg_1', str(man))
+        self.assertIn('\\fB\\-\\-arg\\-2\\fR \\fI\\,ARG_2\\/\\fR, \\fB\\-b\\fR \\fI\\,ARG_2\\/\\fR', str(man).split('\n'))
+        self.assertNotIn('--arg_2', str(man))
+
+
 if __name__ == "__main__":
     unittest.main()
