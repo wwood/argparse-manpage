@@ -39,8 +39,8 @@ class Tests(unittest.TestCase):
             f.write(str(man))
         self.assertIn('\\fB\\-\\-arg\\-1\\fR, \\fB\\-a\\fR', str(man).split('\n'))
         self.assertNotIn('--arg_1', str(man))
-        self.assertIn('\\fB\\-\\-arg\\-2\\fR \\fI\\,ARG_2\\/\\fR, \\fB\\-b\\fR \\fI\\,ARG_2\\/\\fR', str(man).split('\n'))
-        self.assertNotIn('--arg_2', str(man))
+        self.assertIn('\\fB\\-\\-arg\\-2\\fR, \\fB\\-b\\fR \\fI\\,ARG_2\\/\\fR', str(man).split('\n'))
+        self.assertNotIn('arg_2', str(man))
 
 
 if __name__ == "__main__":
