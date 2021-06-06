@@ -6,11 +6,12 @@ DEFAULT_ACTION_GROUPS = ('positional arguments','optional arguments')
 
 
 class Manpage(object):
-    def __init__(self, parser):
+    def __init__(self, parser, authors=[]):
         self.prog = parser.prog
         self.parser = parser
         if not getattr(parser, '_manpage', None):
             self.parser._manpage = []
+        self.authors = authors
 
         self.formatter = self.parser._get_formatter()
         self.mf = _ManpageFormatter(self.prog, self.formatter)
@@ -46,7 +47,17 @@ class Manpage(object):
             lines.append('.SH DESCRIPTION')
             lines.append(self.format_text(self.description))
 
+<<<<<<< HEAD
         # Global options
+=======
+        # Named argument groups
+        for action_group in self.parser._action_groups:
+            if action_group.title not in DEFAULT_ACTION_GROUPS:
+                lines.append('.SH {}'.format(action_group.title.upper()))
+                lines.append(self.mf.format_action_group(action_group, self.parser.prog))
+
+        # Options
+>>>>>>> c615357... manpage: Add AUTHOR section.
         printed_option_header = False
         for action_group in self.parser._action_groups:
             if action_group.title in DEFAULT_ACTION_GROUPS and \
@@ -69,6 +80,17 @@ class Manpage(object):
                 action_group != self.parser._subparsers:
                     lines.append('.SH {}'.format(action_group.title.upper()))
                     lines.append(self.mf.format_action_group(action_group, self.parser.prog))
+        # Authors
+        if len(self.authors) > 0:
+            if len(self.authors) == 1:
+                lines.append(".SH AUTHOR")
+            else:
+                lines.append(".SH AUTHORS")
+
+            # init list
+            lines.append(self.mf._init_list())
+            for author in self.authors:
+                lines.append(author)
 
         if self.parser.epilog != None:
             lines.append('.SH COMMENTS')
@@ -233,3 +255,6 @@ class _ManpageFormatter(HelpFormatter):
         return self._markup(text.strip('\n')\
                    .replace('\\', '\\\\')\
                    .replace('\n', '\n') + '\n')
+
+    def _init_list(self):
+        return ".P\n.RS 2\n.nf"

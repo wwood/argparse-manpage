@@ -47,6 +47,18 @@ class Tests(unittest.TestCase):
         man = Manpage(parser1)
         self.assertIn('argument with optional underscore or hyphen\n\nthen later another paragraph', str(man))
 
+    def test_author_section(self):
+        parser1 = argparse.ArgumentParser('duh')
+        parser1.add_argument('--arg-1','-a','--arg_1',action='store_true',
+            help='argument with optional underscore or hyphen\n\nthen later another paragraph')
+        man = Manpage(parser1, authors=['a1 <yes@no>','a3 and <fdassfd>'])
+        with open('blah','w') as f:
+            f.write(str(man))
+        self.assertIn(('.SH AUTHORS\n.P\n.RS 2\n.nf\n'
+            'a1 <yes@no>\n'
+            'a3 and <fdassfd>'), str(man))
+
+
 
 if __name__ == "__main__":
     unittest.main()
