@@ -1,5 +1,6 @@
 from argparse import SUPPRESS, HelpFormatter, _SubParsersAction, _HelpAction
 from collections import OrderedDict
+import re
 
 DEFAULT_ACTION_GROUPS = ('positional arguments','optional arguments')
 
@@ -172,7 +173,11 @@ class _ManpageFormatter(HelpFormatter):
 
         # if there was help for the action, add lines of help text
         if action.help:
-            help_text = self.of._format_text(self._expand_help(action)).strip('\n')
+            newline_replacement_regex = re.compile(' *\n\n *')
+            newline_replacement_sentinal = '====MAN'
+            expanded_help = self._expand_help(action)
+            expanded_help = newline_replacement_regex.sub(newline_replacement_sentinal, expanded_help)
+            help_text = self.of._format_text(expanded_help).strip('\n').replace(newline_replacement_sentinal,'\n\n')
             parts.append(self.format_text(help_text))
 
         return parts
