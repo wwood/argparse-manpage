@@ -6,7 +6,7 @@ DEFAULT_ACTION_GROUPS = ('positional arguments','optional arguments')
 
 
 class Manpage(object):
-    def __init__(self, parser, authors=[]):
+    def __init__(self, parser, authors=[], raw_format=False):
         self.prog = parser.prog
         self.parser = parser
         if not getattr(parser, '_manpage', None):
@@ -14,7 +14,7 @@ class Manpage(object):
         self.authors = authors
 
         self.formatter = self.parser._get_formatter()
-        self.mf = _ManpageFormatter(self.prog, self.formatter)
+        self.mf = _ManpageFormatter(self.prog, self.formatter if raw_format == False else None)
         self.synopsis = self.parser.format_usage().split(':')[-1].split()
         self.description = self.parser.description
 
@@ -47,17 +47,7 @@ class Manpage(object):
             lines.append('.SH DESCRIPTION')
             lines.append(self.format_text(self.description))
 
-<<<<<<< HEAD
         # Global options
-=======
-        # Named argument groups
-        for action_group in self.parser._action_groups:
-            if action_group.title not in DEFAULT_ACTION_GROUPS:
-                lines.append('.SH {}'.format(action_group.title.upper()))
-                lines.append(self.mf.format_action_group(action_group, self.parser.prog))
-
-        # Options
->>>>>>> c615357... manpage: Add AUTHOR section.
         printed_option_header = False
         for action_group in self.parser._action_groups:
             if action_group.title in DEFAULT_ACTION_GROUPS and \
@@ -111,7 +101,7 @@ class _ManpageFormatter(HelpFormatter):
         self.of = old_formatter
 
     def _markup(self, text):
-        if isinstance(text, str):
+        if isinstance(text, str) and self.of:
             return text.replace('-', r'\-')
         return text
 
@@ -195,12 +185,15 @@ class _ManpageFormatter(HelpFormatter):
 
         # if there was help for the action, add lines of help text
         if action.help:
-            newline_replacement_regex = re.compile(' *\n\n *')
-            newline_replacement_sentinal = '====MAN'
-            expanded_help = self._expand_help(action)
-            expanded_help = newline_replacement_regex.sub(newline_replacement_sentinal, expanded_help)
-            help_text = self.of._format_text(expanded_help).strip('\n').replace(newline_replacement_sentinal,'\n\n')
-            parts.append(self.format_text(help_text))
+            if self.of:
+                newline_replacement_regex = re.compile(' *\n\n *')
+                newline_replacement_sentinal = '====MAN'
+                expanded_help = action.help
+                expanded_help = newline_replacement_regex.sub(newline_replacement_sentinal, expanded_help)
+                help_text = self.of._format_text(expanded_help).strip('\n').replace(newline_replacement_sentinal,'\n\n')
+                parts.append(self.format_text(help_text))
+            else:
+                parts.append(action.help)
 
         return parts
 
