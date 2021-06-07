@@ -1,13 +1,16 @@
 import os
-import sys
-from setuptools import setup, find_packages
+from os.path import dirname, join
+import io
+from setuptools import setup
 
-from setuptools.command.build_py import build_py
-from setuptools.command.install import install
-from build_manpages import __version__
-from build_manpages.build_manpages \
-    import build_manpages, get_build_py_cmd, get_install_cmd
-
+def get_version(relpath):
+  """Read version info from a file without importing it"""
+  for line in io.open(join(dirname(__file__), relpath), encoding="cp437"):
+    if "__version__" in line:
+      if '"' in line:
+        return line.split('"')[1]
+      elif "'" in line:
+        return line.split("'")[1]
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -16,27 +19,21 @@ def get_readme():
         return ''.join(fh.readlines())
 
 setup(
-    name='argparse-manpage',
-    version=__version__,
-    url='https://github.com/praiskup/argparse-manpage',
+    name='argparse-manpage-birdtools',
+    version=get_version('build_manpages/__init__.py'),
+    url='https://github.com/wwood/argparse-manpage-birdtools',
     license='Apache 2.0',
-    py_modules = ['build_manpage'],
-    author='Gabriele Giammatteo',
-    author_email='gabriele.giammatteo@eng.it',
-    maintainer='Pavel Raiskup',
-    maintainer_email='praiskup@redhat.com',
-    packages=find_packages(),
-    entry_points={
-        'console_scripts': [
-            'argparse-manpage=build_manpages.cli:main',
-        ],
-    },
-    description='Build manual page from python\'s ArgumentParser object.',
+    author='Ben Woodcroft, Gabriele Giammatteo, Pavel Raiskup',
+    author_email='benjwoodcroft near gmail.com, gabriele.giammatteo@eng.it, praiskup@redhat.com',
+    maintainer='Ben Woodcroft',
+    maintainer_email='benjwoodcroft near gmail.com',
+    packages=['build_manpages'],
+    description='Format ROFF documents (manual page format) from python\'s ArgumentParser object.',
     long_description=get_readme(),
     long_description_content_type='text/markdown',
-    cmdclass={
-        'build_manpages': build_manpages,
-        'build_py': get_build_py_cmd(build_py),
-        'install': get_install_cmd(install),
-    },
+    package_data={'': [
+            "build_manpages/*",
+                       ]},
+    data_files=[(".", ["README.md", "LICENSE"])],
+    include_package_data=True,
 )
