@@ -1,3 +1,4 @@
+[![Travis](https://api.travis-ci.com/wwood/argparse-manpage.svg?branch=bird_opinions)](https://travis-ci.org/wwood/argparse-manpage)
 
 This code is a fork of https://github.com/praiskup/argparse-manpage with various
 opinions introduced, to make it easier to use for the usual style of the
@@ -9,12 +10,5 @@ that allows formatting of manpages at runtime, rather than at install-time.
 
 # License
 
-This work is released under the terms of the Apache License v2.0.
-See LICENSE for details.
-
-[gabrielegiammatteo]: https://github.com/andialbrecht/build\_manpage
-[andialbrecht]: https://github.com/andialbrecht/build\_manpage
-[frog]: http://crunchyfrog.googlecode.com/svn/
-[RunSQLRun]: https://github.com/andialbrecht/runsqlrun
-[old blog post]: https://andialbrecht.wordpress.com/2009/03/17/creating-a-man-page-with-distutils-and-optparse/
-[python pull request]: https://github.com/python/cpython/pull/1169
+This work is released under the terms of the Apache License v2.0. See LICENSE
+for details, and upstream repositories for author information.
