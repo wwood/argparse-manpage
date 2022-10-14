@@ -89,7 +89,7 @@ class Manpage(object):
         # Additional Section
         for section in self.parser._manpage:
             lines.append('.SH {}'.format(section['heading'].upper()))
-            lines.append(self.format_text(section['content']))
+            lines.append(section['content'])
 
         return '\n'.join(lines).strip('\n') + '\n'
 
