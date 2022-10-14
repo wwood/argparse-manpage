@@ -14,7 +14,7 @@ def get_version(relpath):
         return line.split("'")[1]
 
 if __name__ == "__main__":
-    version = get_version('build_manpages/version.py')
+    version = get_version('build_manpages/__init__.py')
     print("version is {}".format(version))
 
     print("Checking if repo is clean ..")
